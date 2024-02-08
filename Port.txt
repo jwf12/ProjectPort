@@ -1,0 +1,25 @@
+Home:
+-Shows my friends proyects
+-Search bar:
+    *Search people.
+    *Search proyect.
+    *Profile.
+    *Log-out.
+    *Latest projects(non friends).
+    *Open to work (List of user open to work)
+
+
+Profile:
+-The portafolio.
+-My projects.
+-Button to friend/unfriend.
+-My information.
+-Profile Pic.
+
+
+Search projects:
+-Search bar with filters to search open proyects positions.
+
+
+Open to work:
+-Search bar with filters to search open to work profiles.

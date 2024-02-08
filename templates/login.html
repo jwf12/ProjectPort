@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="container "> 
+        <div class="row ">
+            <div class="col-12">
+                <div class="main col-12 mt-4 d-flex justify-content-center">
+                    <div class="inside col-4">
+
+                        <h1 class="my-4">Welcome to Port</h1>
+                        
+                        <div class="menu border border-radius rounded p-3" style="background-color: rgba(141, 52, 141, 0.2);"> 
+                            <form action="" method='POST'>
+                                {% csrf_token %}
+        
+                                <div class="form-group">
+                                    <label for="">Username:</label>
+                                    <input type="text" class='form-control' name='username' id='username' placeholder ='Username'>
+                                </div>
+        
+                                <br>
+                                <div class="form-group">
+                                    <label for="">Password:</label>
+                                    <input type="password" class='form-control' name='password' id='password' placeholder ='Password'>
+                                </div>
+        
+                                <br>    
+                                <div class="but d-flex justify-content-around">
+                                    <button class="btn mr-2" style="background-color: #BD83B8; border-radius: 20px;" type='submit'>Acceder</button>
+                                    <a class="ml-2 border p-3  text-black" style="background-color: #f3c98a; border-radius: 20px; " href="{% url 'port:register' %}">Register</a>
+                                </div>                
+        
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

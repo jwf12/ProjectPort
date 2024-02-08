@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="container d-flex"> 
+        <div class="row justify-content-center">
+            <div class="col-8">
+                <div class="main col-12 d-flex justify-content-center flex-column text-center">
+
+                    <div class="">
+                        <h1 class="my-4 text-center">Welcome to Port</h1>
+                    </div>
+                    
+                    <form action="{% url 'port:register' %}" method = 'post' enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="personal_info col-12 d-flex flex-wrap justify-content-center mt-4 p-3">
+                            
+                            <h5 class="">Personal information</h5>
+                            <br>
+                            
+                            <div class="div col-10 d-flex flex-wrap justify-content-between mt-4 p-3 flex-start border border-radius rounded" style="background-color:  rgba(141, 52, 141, 0.2);">
+                                <div class="form-group">
+                                <label for="pic"> Profile:</label>
+                                {{form.profile_pic}}
+                                {% comment %} <input type="text" class='form-control' name='username' id='username' > {% endcomment %}
+
+                            </div>
+
+                            <div class="form-group">
+                                <label for="">Username:</label>
+                                {{form.username}}
+                                {% comment %} <input type="text" class='form-control' name='username' id='username' > {% endcomment %}
+
+                            </div>
+                            
+                            <br>
+                            <div class="form-group">
+                                <label for="Name">Name:</label>
+                                {{form.first_name}}
+                                {% comment %} <input type="text" class='form-control' name='Name' id='Name' placeholder ='Aqui tu nombre'> {% endcomment %}
+
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="Last-name">Last name:</label>
+                                {{form.last_name}}
+                                {% comment %} <input type="text" class='form-control' name='Last-name' id='Last-name' placeholder ='Aqui tu apellido'> {% endcomment %}
+
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="age">Birth Date:</label>
+                                {{form.age}}
+                                {% comment %} <input type="text" class='form-control' name='age' id='age' placeholder ='Aqui tu nacimiento'> {% endcomment %}
+
+                            </div>
+                            <br>
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                {{form.email}}
+                            </div>
+                            <div class="form-group">
+                                <label for="sex">Sex:</label>
+                                {{form.sex}}
+                                {% comment %} <input type="text" class='form-control' name='sex' id='sex' > {% endcomment %}
+
+                            </div>
+                            <div class="form-group">
+                                <label for="cv">Curriculum:</label>
+                                {{form.cv}}
+                                {% comment %} <input type="text" class='form-control'> {% endcomment %}
+
+                            </div>
+                            <div class="form-group">
+                                <label for="about_me">About Me:</label>
+                                {{form.about_me}}
+                                {% comment %} <input type="text" class='form-control' name='sex' id='sex' > {% endcomment %}
+
+                            </div>
+                            </div>
+                            
+                        </div>
+                        <div class="programmer col-12 d-flex flex-wrap justify-content-center mt-2 p-3">
+                            <h5 class="">Programming information</h5>
+                            <div class="div col-10 d-flex flex-wrap justify-content-between mt-4 p-3 flex-start border border-radius rounded" style="background-color: rgba(141, 52, 141, 0.2);">
+                                
+                                <div class="form-group m-1">
+                                    <label for="searching">Open to work:</label>
+                                    {{form.searching}}
+                                    {% comment %} <input type="text" class='form-control' name='sex' id='sex' > {% endcomment %}
+
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <label for="language">Language:</label>
+                                    {{form.language}}
+                                    {% comment %} <input type="text" class='form-control' name='sex' id='sex' > {% endcomment %}
+
+                                </div>
+                                <div class="form-group">
+                                    <label for="position">Position:</label>
+                                    {{form.position}}
+                                    {% comment %} <input type="text" class='form-control' name='sex' id='sex' > {% endcomment %}
+
+                                </div>
+
+                            </div>
+                            
+
+                        </div>
+                    
+                        <br>
+
+                        <div class="col-12 d-flex flex-wrap justify-content-center mt-2">
+
+                            <div class="col-10 d-flex flex-wrap justify-content-between mt-2 p-3 flex-start border border-radius rounded" style="background-color: rgba(141, 52, 141, 0.2);">
+                                <div class="form-group">
+                                    <label for="">Password:</label>
+                                    {{form.password1}}
+                                    {% comment %} <input type="password" class='form-control' name='password' id='password' placeholder ='Aqui tu contraseña'> {% endcomment %}
+                                </div>
+                                <div class="form-group">
+                                    <label for="">Repeat paswword:</label>
+                                    {{form.password2}}
+                                    {% comment %} <input type="password" class='form-control' name='re-password' id='re-password' placeholder ='Aqui tu contraseña'> {% endcomment %}
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                        
+                         <div class="but">
+                             <button class="col-8 btn btn-primary my-5 h-100" style="height: 50px;"='submit'>Create</button>
+                         </div>                
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+                
+
+{% endblock content %}
