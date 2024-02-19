@@ -19,14 +19,14 @@
                   <p>{{project.date}}</p>   
                 </div>
 
-                <div class="card-body text-center" style="margin-bottom: -1rem;">
+                <div class="card-body text-center" style="margin-bottom: -2rem;">
         
                   <h2 class="border-bottom border-primary pb-2 text-primary">{{ project.title }}</h2>
                   <img src="{{project.img}}" alt="{{project.title}}" class="mt-1" style="width: 20rem; border-radius: 1rem;" >
                   <p class="text-black mt-3">{{ project.description }}</p>
 
                   {% if project.coworker %}
-                    <p>Coworker: <a href="">{{project.coworker}}</a></p>                  
+                    <p>Coworker: <a href="{% url 'port:user_detail' project.coworker.friend.id %}">{{project.coworker}}</a></p>                  
                   {% endif %}
                   
                 </div>

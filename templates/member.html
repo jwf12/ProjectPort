@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+<header class="row bg-black">
+  <div class="col-md-4 py-2 align-items-center mt-5" >
+    <img src="{{member.profile_pic.url}}" class="img-fluid align-items-center" style=" width:20rem; height: 20rem; border-radius: 50%;"/>
+  </div>
+
+  <div class="col-md-8 my-auto p-4">
+    <h1>Welcome!</h1>
+    <h2>I am <strong class="storn">{{member.username}}</strong></h2>    
+    <h4>{{member.about_me}}</h4>
+    <a class="btn btn-primary btn-lg rounded-0 my-3" href="">Download my CV</a>
+  </div>
+</header>
+
+<!-- Porfolio Section -->
+<div class="row my-4 text-center">
+
+  <h2 class="my-4" id="project">My <strong class="storn">Projects</strong></h2>
+  
+  
+  {% for project in projects %}
+    {% if project.proyect_user.id == member.id %} 
+        <div class="col-md-4 p-4">
+        
+            <div class="card bg-black card-project">
+                <img src="{{project.image.url}}" class="card-img-top" style="height:8.5rem;"/>
+
+                <div class="card-body text-center">
+
+                <h2 class="border-bottom border-primary pb-2 text-primary">{{ project.title }}</h2>
+                <p class="text-light">{{ project.description }}</p>
+
+                <div class="urls d-flex justify-content-around align-items-center my-3 pt-2 border-top">
+
+                    {% if project.url_proyect %}
+                      <div class="child-card">
+                        <a href="{{project.url_proyect}}" class="btn btn-primary rounded-3 btn-sm pb-2" target="__blank" rel="noreferrer">Visit the
+                          Project</a>
+                      </div>
+                    {% endif %}
+  
+                    {% if project.url_repo %}
+                      <div class="child-card">
+                        <a href="{{project.url_repo}}" class="btn btn-primary rounded-3 btn-sm pb-2" target="__blank" rel="noreferrer">Visit the
+                          Repo</a>
+                      </div>
+                    {% endif %}
+  
+                  </div>
+                
+                </div>
+            </div>
+            
+        </div>
+
+    {% endif %}
+  {% endfor %}
+</div>
+<div class="technologies text-center">  
+
+    <h2 class="my-5" id="tec">My <strong class="storn">skills</strong></h2>
+
+    <div class="row bg-black text-center d-flex justify-content-center">      
+      <div class=" col-md-10 d-flex flex-wrap justify-content-center">
+        <picture>      
+          <img src="" alt="HTML5">
+        </picture>
+        <picture>
+          <img src="" alt="css3">
+        </picture>
+        <picture>
+          <img src="" alt="css3">
+        </picture>
+        <picture>
+          <img src="" alt="Python">
+        </picture>
+        <picture>
+          <img src="" alt="Django">
+        </picture>
+        <picture>
+          <img src="" alt="css3" class="rest pt-3">
+        </picture>
+        <picture>
+          <img src="" alt="css3">
+        </picture>
+        <picture>
+          <img src="" alt="css3">
+        </picture>
+        <picture>
+          <img src="" alt="css3">
+        </picture>
+        
+    </div>
+  </div>
+</div>
+
+
+<footer class="row contact text-center footer mt-5 ">
+    <h3 class="my-2" id="contact">Con<strong class="storn">tacts</strong></h3>
+
+    <div class=" col-md-12 bg-black d-flex justify-content-center flex-wrap">
+      <picture class="d-flex">
+        <img src="" alt="mail">
+        <a href="mailto:jwf_12@hotmail.com" target="_blank">Email</a>
+      </picture>
+      <picture class="d-flex">
+        <img src="" alt="github">
+        <a href="https://github.com/jwf12?tab=repositories" target="_blank">Github</a>
+      </picture>
+      <picture class="d-flex">
+        <img src="" alt="css3">
+        <a href="https://www.linkedin.com/in/julian-ward-fraise/" target="_blank">LinkedIn</a>
+      </picture>
+    </div>
+
+</footer>
+
+{% endblock %}

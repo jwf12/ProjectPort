@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 
 # Create your models here.
 class Member(AbstractUser):
-    profile_pic = models.ImageField(upload_to="media/images", blank=True, null=True)
+    profile_pic = models.ImageField(upload_to="static/media/images", blank=True, null=True)
     first_name = models.CharField(max_length=100, verbose_name='Name')
     last_name = models.CharField(max_length=100, verbose_name='Last Name')
     age = models.DateField( blank=True, null=True)
@@ -15,7 +15,7 @@ class Member(AbstractUser):
         ('2', 'Male')
     )
     sex = models.CharField(max_length=1, choices=SEX_OPTION, verbose_name='Sex')
-    cv = models.FileField(upload_to="media/cv", blank=True, null=True)
+    cv = models.FileField(upload_to="static/media/cv", blank=True, null=True)
     about_me = models.TextField(verbose_name='About', blank=True, null=True)
     searching = models.BooleanField(default=True, verbose_name='Searching')
     language = models.CharField(max_length=20, verbose_name='Language')
@@ -37,10 +37,11 @@ class Friends(models.Model):
     def __str__(self):
         return f"{self.friend.username}"
 
+
 class Proyects(models.Model):
     proyect_user = models.ForeignKey(Member, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    img = models.ImageField(upload_to="media/images/proyects")
+    img = models.ImageField(upload_to="static/media/images/proyects")
     description = models.TextField()
     coworker = models.ForeignKey(Friends, on_delete=models.CASCADE, blank=True, null=True)
     url_proyect = models.URLField(blank=True)

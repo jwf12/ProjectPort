@@ -19,13 +19,23 @@ class Home(generic.ListView):
         #Filtro los amigos relacionados con ese usuario.
         friends = Friends.objects.filter(user=user).values_list('friend', flat=True)
         #Traigo los proyectos que esten relacionados con mis amigos.
-        project_friends = Proyects.objects.filter(proyect_user__in=friends).order_by('date')
+        project_friends = Proyects.objects.filter(proyect_user__in=friends).order_by('-date')
         
         #Paso el contexto.
         context['projects'] = project_friends
 
         return context
 
+
+class UserDetail(generic.DetailView):
+    model = Member
+    template_name = 'member.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['members'] = Member.objects.all()
+        context['projects'] = Proyects.objects.all()
+        return context
 
 
 # Login 
