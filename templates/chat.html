@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load last_message %}
+{% block content %}
+<style>
+    .scroll-chat{
+        overflow: auto;
+        height: 69vh;
+    }
+    .scroll-list{
+        overflow: auto;
+        height: 76vh;
+    }
+    .avatar img{
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        color: rgb(255, 255, 255);
+        background-color: black;
+        display: flex;
+        justify-content: center; /* Center horizontally */
+        align-items: center; /* Center vertically */
+        text-align: center; /* Optional: Center text horizontally if needed */
+    }
+    .avatar h2 {
+        margin: 0; /* Optionally reset margin to remove any default margin */
+    }
+    .active_user{
+        background-color: #eee;
+    }
+    .message-box{
+        border: 2px solid rgb(11, 90, 175);
+    }
+    #chat-message-submit {
+        /* Hide the button text */
+        font-size: 0; /* Set font size to 0 */
+        padding: 0; /* Optionally remove padding */
+        border: none; /* Optionally remove border */
+        background: none; /* Optionally remove background */
+    }
+
+    /* Set a non-zero font size for the icon */
+    #chat-message-submit i {
+        font-size: 16px; /* Adjust the font size as needed */
+        margin-right: 8px;
+    }
+    
+</style>
+<section style="background-color: #eee;">
+    <div class="container py-5">
+  
+      <div class="row">
+  
+        <div class="col-md-6 col-lg-5 col-xl-4 mb-4 mb-md-0">
+  
+          <h5 class="font-weight-bold mb-3 text-center text-lg-start">Member</h5>
+  
+          <div class="card">
+            <div class="card-body scroll-list">
+  
+              <ul class="list-unstyled mb-0">
+                {% for user in users %}
+                <li class="p-2 border-bottom {% if user.username in request.path %}active_user{% endif %}">
+                  <a href="{% url 'chat' user %}" class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                  
+                            <div class="avatar me-3 shadow-1-strong">
+                                <img src="{{user.profile_pic.url}}" alt="">
+                            </div>
+                                            
+                      <div class="pt-1">
+                        <p class="fw-bold mb-0">{% if user.get_full_name %}
+                            {{ user.get_full_name }}
+                        {% else %}
+                            {{ user.username }}
+                        {% endif %}</p>
+                        <p class="small text-muted">{{user|last_message:request.user}}</p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                {% endfor %}
+              </ul>
+  
+            </div>
+          </div>
+  
+        </div>
+  
+        <div class="col-md-6 col-lg-7 col-xl-8 mt-3">
+  
+          <ul id="chat-log" class="list-unstyled scroll-chat">
+            {% for chat in chats %}
+            {% if chat.sender == request.user %}
+            <div class="d-flex justify-content-between">
+                <p class="small mb-1 text-muted"></p>
+                <p class="small mb-1">{{chat.sender.get_full_name}}</p>
+              </div>
+              <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                <div>
+                  <p class="small p-2 me-3 mb-3 text-white rounded-3 bg-warning">
+                    {{chat.message}} <br>
+                    <small style="font-size: 9px;">{{chat.timestamp}}</small>
+                  </p>
+                </div>
+                <div class="avatar me-3 shadow-1-strong">
+                    <img src="{{chat.sender.profile_pic.url}}">
+                </div>
+                
+                  
+              </div>
+              {% else %}
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="small mb-1">{{chat.sender.get_full_name}}</p>
+              </div>
+              <div class="d-flex flex-row justify-content-start">
+                <div class="avatar me-3 shadow-1-strong">
+                    <img src="{{chat.sender.profile_pic.url}}">
+                </div>
+                <div>
+                  <p title="{{chat.timestamp}}" class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
+                    {{chat.message}} <br>
+                    <small style="font-size: 9px;">{{chat.timestamp}}</small>
+                </p>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+        </ul>
+        <div class="bg-white mt-5 mb-3">
+          <div class="form-outline">
+            <form method="post" class="message-box d-flex w-100">
+                {% csrf_token %}
+                <input type="text" id="chat-message-input" class="form-control" name="" id="">
+                <button id="chat-message-submit" type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
+          </div>
+        </div>
+  
+        </div>
+  
+      </div>
+  
+    </div>
+  </section>
+
+
+  <script>
+
+    let chatLog = document.getElementById('chat-log');
+    let messageInput = document.getElementById('chat-message-input');
+    let messageSubmit = document.getElementById('chat-message-submit');
+    let lastMessage = document.getElementById('last-message');
+    let roomName = "{{room_name}}";
+    let user = "{{request.user.username}}"
+  
+  
+    const chatSocket = new WebSocket(
+      `ws://${window.location.host}/ws/chat/${roomName}/`
+    )
+  
+    chatSocket.onmessage = e => {
+  const data = JSON.parse(e.data);
+  var html = '';
+ 
+  function formatTimestamp(timestamp) {
+    const months = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.'];
+    
+    const date = new Date(timestamp);
+    const month = months[date.getMonth()];
+    const day = date.getDate();
+    const year = date.getFullYear();
+    let hour = date.getHours();
+    const minute = date.getMinutes();
+    const period = hour < 12 ? 'a.m.' : 'p.m.';
+
+    // Convert hour to 12-hour format
+    if (hour > 12) {
+        hour -= 12;
+    }
+
+    // Pad single digit minute with leading zero
+    const formattedMinute = minute < 10 ? '0' + minute : minute;
+
+    return `${month} ${day}, ${year}, ${hour}:${formattedMinute} ${period}`;
+}
+const timestamp = data.timestamp; // Example timestamp
+const formattedTimestamp = formatTimestamp(timestamp);
+console.log(formattedTimestamp);
+
+  
+  if (data.sender === user) {
+    // Message from the requested user
+    console.log(e.data)
+    html = `
+    <div class="d-flex justify-content-between">
+                <p class="small mb-1 text-muted"></p>
+                <p class="small mb-1">${data.sender_full_name}</p>
+              </div>
+              <div class="d-flex flex-row justify-content-end mb-4 pt-1">
+                <div>
+                  <p class="small p-2 me-3 mb-3 text-white rounded-3 bg-warning">
+                    ${data.message} ${data}<br>
+                    <small style="font-size: 9px;">${data.timestamp}</small>
+                  </p>
+                </div>
+            <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava6-bg.webp"
+                  alt="avatar 1" style="width: 45px; height: 100%;">
+    </div>
+    `;
+  } else {
+    // Message from other users
+    html = `
+    <div class="d-flex justify-content-between">
+                <p class="small mb-1">${data.sender_full_name}</p>
+              </div>
+              <div class="d-flex flex-row justify-content-start">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava5-bg.webp"
+                  alt="avatar 1" style="width: 45px; height: 100%;">
+                <div>
+                  <p title="${data.timestamp}" class="small p-2 ms-3 mb-3 rounded-3" style="background-color: #f5f6f7;">
+                    ${data.message} <br>
+                    <small style="font-size: 9px;">${formattedTimestamp}</small>
+                </p>
+                </div>
+              </div>
+    `;
+  }
+  
+  chatLog.insertAdjacentHTML("beforeend", html);
+  messageBody.scrollTop = messageBody.scrollHeight; // Scroll to the bottom
+  lastMessage.textContent = data.message;
+};
+  
+    chatSocket.onclose = e => {
+      console.error('Chat socket closed unexpectedly');
+    }
+  
+    messageSubmit.disabled = true;
+    messageInput.addEventListener('input', function() {
+      if (messageInput.value.trim() !== '') {
+        messageSubmit.disabled = false;
+      } else {
+        messageSubmit.disabled = true;
+      }
+    })
+  
+    messageInput.focus();
+    messageSubmit.onclick = e => {
+      const message = messageInput.value;
+      chatSocket.send(JSON.stringify({
+        'message': message
+      }));
+      messageInput.value = '';
+    }
+  
+  
+    var messageBody = document.querySelector('.scroll-chat');
+        messageBody.scrollTop = messageBody.scrollHeight - messageBody.clientHeight;
+        document.body.scrollTop = document.documentElement.scrollTop = 0;
+  </script>
+
+{% endblock content %}

@@ -1,0 +1,45 @@
+
+.bg-black {
+    background: #000;
+  }
+
+.card{
+    height:380px;
+  }
+
+.child-card {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding-right:2rem;
+    margin-bottom: 0.5rem;
+  }
+
+.card-project:hover {
+    border: 1px solid #eee;
+    cursor: pointer;
+  }
+
+.rest{
+    width:150px;
+  }
+
+picture{
+    margin: 1rem;
+  }
+
+a{
+    text-decoration: none;
+    color:#eee;
+    margin-top: 3px;
+    margin-left: 7px;
+  }
+
+a:hover{
+    color:rgb(61, 107, 255);
+  }
+
+.storn{
+  color: rgb(61, 107, 255); 
+ }
+

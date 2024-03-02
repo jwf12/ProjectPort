@@ -44,8 +44,8 @@ class Proyects(models.Model):
     img = models.ImageField(upload_to="static/media/images/proyects")
     description = models.TextField()
     coworker = models.ForeignKey(Friends, on_delete=models.CASCADE, blank=True, null=True)
-    url_proyect = models.URLField(blank=True)
-    url_repo = models.URLField(blank=True)
+    url_proyect = models.URLField(blank=True, null=True)
+    url_repo = models.URLField(blank=True, null=True)
     date = models.DateField(auto_now=True)
     
     def __str__(self):
