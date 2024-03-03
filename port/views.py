@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView
 from django.shortcuts import redirect, get_object_or_404, render
 from .forms import RegistroForm
 from .filters import SearchFilter
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Member, Proyects, Friends, Proyect_Finder
 
 #View creada para poder mostrar buscar los usuarios en el template base
@@ -21,7 +22,7 @@ class searchBar(generic.ListView):
         return context
 
 
-class Home(generic.ListView):
+class Home(LoginRequiredMixin, generic.ListView):
     model = Proyects
     template_name = 'home.html'
 
@@ -89,7 +90,7 @@ class CreateProject(generic.CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        messages.success(self.request, 'Reservation created')
+        messages.success(self.request, 'Project created')
         return response
     
     def form_invalid(self,form):
@@ -97,7 +98,19 @@ class CreateProject(generic.CreateView):
         return super().form_invalid(form)
     
     
+class DeleteProject(generic.DeleteView):
+    model = Proyects
+    template_engine = 'member.html'
+    success_url = reverse_lazy('port:home')
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        messages.success(self.request, 'Project deleted')
+        return response
+    
+    def form_invalid(self,form):
+        print(form.errors)
+        return super().form_invalid(form)
 
 
 
@@ -111,6 +124,7 @@ def DeleteFriend(request, pk):
     friends = Friends.objects.get(pk=pk)
     if friends: 
         friends.delete()
+        messages.error(request, 'Friend deleted')
         return redirect(reverse_lazy('port:home'))
 
 
@@ -121,6 +135,7 @@ def create_friend(request, pk):
     
     if user != member: 
         Friends.objects.create(user=user, friend=member)
+        messages.success(request, 'Friend added')
         return redirect(reverse_lazy('port:home'))
 
 

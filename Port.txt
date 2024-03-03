@@ -10,6 +10,7 @@ Home:
 
 
 Profile:
+-Edit profile
 -The portafolio.
 -My projects.
 -Button to friend/unfriend.

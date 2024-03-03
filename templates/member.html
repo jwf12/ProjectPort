@@ -16,7 +16,7 @@
     <h4>{{member.about_me}}</h4>
 
     <div class="buttons d-flex justify-content-between align-items-center">
-        <a class="btn btn-primary btn-lg rounded my-3" href="{{member.cv.url}}">Download my CV</a>
+        <a class="btn btn-primary btn-lg rounded my-3" href="{{member.cv.url}}" target="__blank">Download my CV</a>
         
         {% if member.id %}
         {% if user.id != member.id and not member.id in friends %}
@@ -79,7 +79,16 @@
                     {% endif %}
   
                   </div>
-                
+
+                  {% if user.id == member.id %}                    
+                    <div class="del">
+                      <form action="{% url 'port:delete_project' project.id %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                      </form>
+                    </div>
+                  {% endif %}
+
                 </div>
             </div>
             
@@ -143,7 +152,7 @@
         </div>
         
     
-        <form action="{% url 'port:create_project'%}" method = 'POST'>
+        <form action="{% url 'port:create_project'%}" method = 'POST' enctype="multipart/form-data">
             {% csrf_token %}
             <div class="modal-body">
                 
@@ -174,11 +183,11 @@
               </div>
               <div class="form-group m-3">
                   <label for="url_proyect">Project URL:</label>
-                  <input type="url" class="form-control" id="url_proyect" name="url_proyect">
+                  <input type="text" class="form-control" id="url_proyect" name="url_proyect">
               </div>
               <div class="form-group m-3">
                   <label for="url_repo">Repository URL:</label>
-                  <input type="url" class="form-control" id="url_repo" name="url_repo">
+                  <input type="text" class="form-control" id="url_repo" name="url_repo">
               </div>
             
             </div>
