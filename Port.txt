@@ -9,10 +9,11 @@ Home:
     *Open to work (List of user open to work)
 
 
-Profile:
--Edit profile
--The portafolio.
+Profile:The portafolio.
+-Edit profile****
 -My projects.
+    *Create.
+    *Delete.
 -Button to friend/unfriend.
 -My information.
 -Profile Pic.
@@ -24,3 +25,5 @@ Search projects:
 
 Open to work:
 -Search bar with filters to search open to work profiles.
+
+docker run -p 6379:6379 -d redis:5

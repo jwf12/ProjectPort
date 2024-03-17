@@ -5,9 +5,10 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 from django.shortcuts import redirect, get_object_or_404, render
-from .forms import RegistroForm
+from .forms import RegistroForm, UpdateMemberForm
 from .filters import SearchFilter
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import update_session_auth_hash
 from .models import Member, Proyects, Friends, Proyect_Finder
 
 #View creada para poder mostrar buscar los usuarios en el template base
@@ -17,8 +18,10 @@ class searchBar(generic.ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        user = self.request.user
         context['users'] = Member.objects.all()
-
+        context['user'] = user
+        print(user)
         return context
 
 
@@ -55,11 +58,35 @@ class UserDetail(generic.DetailView):
         #variables usadas para el boton de eliminar amigo
         member = get_object_or_404(Member, pk=self.kwargs['pk'])
         context['fri'] = Friends.objects.filter(user=user, friend=member).first()
+        context['users'] = Member.objects.all()
 
         context['projects'] = Proyects.objects.all()
         return context
-    
 
+
+class UpdateMember(generic.UpdateView):
+    model = Member
+    template_name = 'member.html'
+    form_class = UpdateMemberForm
+    success_url = reverse_lazy('port:home')
+
+    def form_valid(self, form):
+        # Verificar si se proporciona una nueva contraseña
+        new_password1 = form.cleaned_data.get('new_password1')
+        if new_password1:
+            # Si se proporciona una nueva contraseña, actualizarla
+            self.object.set_password(new_password1)
+            self.object.save()
+            messages.success(self.request, 'Password updated successfully')
+
+        # Actualizar el perfil del usuario
+        response = super().form_valid(form)
+        messages.success(self.request, 'Profile updated successfully')
+        return response
+    
+    def form_invalid(self,form):
+        print(form.errors)
+        return super().form_invalid(form)
 
 # class DeleteFriend(generic.DeleteView):
 #     model = Friends
@@ -163,7 +190,7 @@ class SingUpView(CreateView):
 
     def form_valid(self, form):        
         response = super().form_valid(form)
-        messages.success(self.request, '¡Tu cuenta ha sido creada! Por favor inicia sesión.')
+        messages.success(self.request, '¡Account created! Please sign in.')
         return response
             
     def form_invalid(self, form):

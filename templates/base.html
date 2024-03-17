@@ -16,64 +16,65 @@
 
 <header>
 
-    <nav class="navbar navbar-expand-lg d-flex justify-content-around align-items-center" style="background-color: rgba(255, 255, 255, 0.9); box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
+    <nav class="navbar navbar-expand-lg d-flex justify-content-around align-items-center w-100" style="background-color: rgba(255, 255, 255, 0.9); box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);">
         <div class="container-fluid d-flex justify-content-center align-items-center">
 
           <div class="logo">
             <h5 class="navbar-brand text-black"><a href="{% url 'port:home' %}" style="text-decoration: none;">Port</a></h5>
           </div>
-          
-          <!-- Barra de busqueda -->
-          <div class="search mx-auto align-items-center">            
-            <form id="searchForm" action="" method="get">
-                  <input type="text" class="mr-2 " list="user" name="username" placeholder="Search user..." >
-                  <datalist id="user">
-                      {% for user in users %}
-                      <option value="{{user.id}}">{{user.username}} {{user.first_name}} {{user.last_name}}</option>
-                      {% endfor %}
-                  </datalist>
-                  <button type="button" class="btn btn-primary" id="searchButton">Search</button>
-              </form>
 
-              <script>
-                  document.getElementById('searchButton').addEventListener('click', function(event) {
-                      var input = document.querySelector('input[name="username"]');
-                      var selectedUserId = input.value;
-                      var url = `/user/${selectedUserId}/`;  // Cambia la ruta según tu configuración
-                      window.location.href = url;
-                  });
-              </script>
-          </div>
-                <!-- Fin Barra de busqueda -->
-          
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
+          {% if user.is_authenticated %}            
+            <!-- Barra de busqueda -->
+            <div class="search mx-auto align-items-center">            
+              <form id="searchForm" action="" method="get">
+                    <input type="text" class="mr-2 " list="user" name="username" placeholder="Search user..." >
+                    <datalist id="user">
+                        {% for user in users %}
+                        <option value="{{user.id}}">{{user.username}} {{user.first_name}} {{user.last_name}}</option>
+                        {% endfor %}
+                    </datalist>
+                    <button type="button" class="btn btn-primary" id="searchButton" style="height: 2.5rem;"><img src="{% static '../static/media/images/icons/icons8-búsqueda.svg' %}" alt=""></button>
+                </form>
 
-          
+                <script>
+                    document.getElementById('searchButton').addEventListener('click', function(event) {
+                        var input = document.querySelector('input[name="username"]');
+                        var selectedUserId = input.value;
+                        var url = `/user/${selectedUserId}/`;  // Cambia la ruta según tu configuración
+                        window.location.href = url;
+                    });
+                </script>
+            </div>
+                  <!-- Fin Barra de busqueda -->
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
 
-          <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-              <div class='text-end d-flex align-items-center'>
+            
 
-                <div class="msg d-flex  justify-content-center" >
-                  <a class="btn btn-primary" style="height: 2.5rem;" href="{% url 'msg' %}"><img src="{% static 'media\images\icons\icons8-mensaje-30.png' %}" alt=""></a>
-                </div>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav ms-auto">
+                <div class='text-end d-flex align-items-center'>
 
-                <div class="name m-2">
-                  {% if user.is_authenticated %}
-                              <a class="btn btn-primary" style="height: 2.5rem;" href="{% url 'port:user_detail' user.id %}" class="text-black">Profile</a>
-                  {%endif%}
-                </div>
+                  <div class="msg d-flex  justify-content-center" >
+                    <a class="btn btn-primary" style="height: 2.5rem;" href="{% url 'msg' %}"><img src="{% static 'media\images\icons\icons8-mensaje-30.png' %}" alt=""></a>
+                  </div>
+
+                  <div class="name m-2">
+                    {% if user.is_authenticated %}
+                                <a class="btn btn-primary" style="height: 2.5rem;" href="{% url 'port:user_detail' user.id %}" class="text-black"><img src="{% static '../static/media/images/icons/icons8-cuenta-de-prueba-30.png' %}" alt=""></a>
+                    {%endif%}
+                  </div>
 
 
-                <li class="nav-item ml-1" style="height: 2.5rem; width: 4rem;">
-                  <a class="nav-link btn btn-warning text-black "   href="{% url 'port:logout'%}">Logout</a>
-                </li>
-             </div>
-            </ul>
-          </div>
-
+                  <li class="nav-item ml-1" style="height: 2.5rem; width: 4rem;">
+                    <a class="nav-link btn btn-warning text-black "   href="{% url 'port:logout'%}">Logout</a>
+                  </li>
+              </div>
+              </ul>
+            </div>
+          {% endif %}
         </div>
       </nav>
     
