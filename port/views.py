@@ -74,7 +74,12 @@ class UpdateMember(generic.UpdateView):
         # Verificar si se proporciona una nueva contraseña
         new_password1 = form.cleaned_data.get('new_password1')
         if new_password1:
+            new_password2 = form.cleaned_data.get('new_password2')
             # Si se proporciona una nueva contraseña, actualizarla
+            if new_password1 != new_password2:
+                # Las contraseñas no coinciden, mostrar mensaje de error y redirigir a la página de inicio
+                messages.error(self.request, "New passwords don't match")
+                return super().form_invalid(form)
             self.object.set_password(new_password1)
             self.object.save()
             messages.success(self.request, 'Password updated successfully')
@@ -85,8 +90,16 @@ class UpdateMember(generic.UpdateView):
         return response
     
     def form_invalid(self,form):
-        print(form.errors)
-        return super().form_invalid(form)
+        response = super().form_valid(form)
+        new_password1 = form.cleaned_data.get('new_password1')
+        if new_password1:
+            new_password2 = form.cleaned_data.get('new_password2')
+            # Si se proporciona una nueva contraseña, actualizarla
+            if new_password1 != new_password2:
+                # Las contraseñas no coinciden, mostrar mensaje de error y redirigir a la página de inicio
+                messages.error(self.request, "New passwords don't match")
+                return super().form_invalid(form)
+        return response
 
 # class DeleteFriend(generic.DeleteView):
 #     model = Friends
@@ -140,7 +153,16 @@ class DeleteProject(generic.DeleteView):
         return super().form_invalid(form)
 
 
+#ViewOpenTowork
+class OpenTowork(generic.ListView):
+    model = Member
+    template_name = "open.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['open'] = Member.objects.filter(searching=True)
+        return context
+    
 
 #BOTONES
     

@@ -87,3 +87,6 @@ class UpdateMemberForm(forms.ModelForm):
         if not new_password1:
             self.cleaned_data.pop('new_password1', None)
             self.cleaned_data.pop('new_password2', None)
+            
+
+        return cleaned_data

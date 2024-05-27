@@ -20,24 +20,26 @@
     <div class="buttons d-flex justify-content-between align-items-center">
         <a class="btn btn-primary btn-lg rounded my-3" href="{{member.cv.url}}" target="__blank">Download my CV</a>
         
-        {% if member.id %}
-          {% if user.id != member.id and not member.id in friends %}
-              <a href="{% url 'port:add_friend' member.id %}" class="btn btn-info ">Añadir amigo</a>
+        {% if user.is_authenticated %}          
+          {% if member.id %}
+            {% if user.id != member.id and not member.id in friends %}
+                <a href="{% url 'port:add_friend' member.id %}" class="btn btn-info ">Añadir amigo</a>
+            {% endif %}
+            
+            {% if user.id != member.id and member.id in friends %}          
+                <a href="{% url 'port:del_friend' fri.id %}" class="btn btn-danger ">Eliminar amigo</a>       
+            {% endif %}
           {% endif %}
-          
-          {% if user.id != member.id and member.id in friends %}          
-              <a href="{% url 'port:del_friend' fri.id %}" class="btn btn-danger ">Eliminar amigo</a>       
-          {% endif %}
-        {% endif %}
 
-        {% if user.id == member.id %}
-            <button type='button' class='btn btn-success my-4 ' data-bs-toggle="modal" data-bs-target="#createProject">
-                Upload project
-            </button>
-            <form action="" method='POST'>
-              {% csrf_token %}
-              <button type='button' class='btn btn-primary mx-4 my-4 ' data-bs-toggle="modal" data-bs-target="#updateModal_{{member.id}}">Edit</button>
-          </form>
+          {% if user.id == member.id %}
+              <button type='button' class='btn btn-success my-4 ' data-bs-toggle="modal" data-bs-target="#createProject">
+                  Upload project
+              </button>
+              <form action="" method='POST'>
+                {% csrf_token %}
+                <button type='button' class='btn btn-primary mx-4 my-4 ' data-bs-toggle="modal" data-bs-target="#updateModal_{{member.id}}">Edit</button>
+            </form>
+          {% endif %}
         {% endif %}
     </div>
   </div>
@@ -80,14 +82,15 @@
                     {% endif %}
   
                   </div>
-
-                  {% if user.id == member.id %}                    
-                    <div class="del">
-                      <form action="{% url 'port:delete_project' project.id %}" method="post">
-                        {% csrf_token %}
-                        <button class="btn btn-danger" type="submit">Delete</button>
-                      </form>
-                    </div>
+                  {% if user.is_authenticated %}                    
+                    {% if user.id == member.id %}                    
+                      <div class="del">
+                        <form action="{% url 'port:delete_project' project.id %}" method="post">
+                          {% csrf_token %}
+                          <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                      </div>
+                    {% endif %}
                   {% endif %}
 
                 </div>
@@ -142,69 +145,71 @@
 
 
 
+{% if user.is_authenticated %}
+  
+  <!-- Create Project Modal -->
+    <div class="modal fade" id="createProject" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-journal-bookmark"></i> Project</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+      
+          <form action="{% url 'port:create_project'%}" method = 'POST' enctype="multipart/form-data">
+              {% csrf_token %}
+              <div class="modal-body">
+                  
+                <div class="form-group m-3">
+                  <label for="proyect_user" hidden>User:</label>
+                  <input type="text" class="form-control" id="proyect_user" name="proyect_user" value="{{ user.id }}" readonly hidden>
+                </div>
+                <div class="form-group m-3">
+                    <label for="title">Title:</label>
+                    <input type="text" class="form-control" id="title" name="title" required>
+                </div>
+                <div class="form-group m-3">
+                    <label for="img">Project image:</label>
+                    <input type="file" class="form-control" id="img" name="img" required>
+                </div>
+                <div class="form-group m-3">
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" id="description" name="description" required></textarea>
+                </div>
+                <div class="form-group m-3">
+                    <label for="coworker">Coworker:</label>
+                    <select class="form-control" id="coworker" name="coworker">
+                        <option value="" selected disabled>Choose a coworker</option>
+                        {% for friend in friends %}
+                            <option value="{{ friend.id }}">{{ friend.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group m-3">
+                    <label for="url_proyect">Project URL:</label>
+                    <input type="text" class="form-control" id="url_proyect" name="url_proyect">
+                </div>
+                <div class="form-group m-3">
+                    <label for="url_repo">Repository URL:</label>
+                    <input type="text" class="form-control" id="url_repo" name="url_repo">
+                </div>
+              
+              </div>
 
-<!-- Create Project Modal -->
-  <div class="modal fade" id="createProject" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="bi bi-journal-bookmark"></i> Project</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+
+          </form>
+
+          
         </div>
-        
-    
-        <form action="{% url 'port:create_project'%}" method = 'POST' enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="modal-body">
-                
-              <div class="form-group m-3">
-                <label for="proyect_user" hidden>User:</label>
-                <input type="text" class="form-control" id="proyect_user" name="proyect_user" value="{{ user.id }}" readonly hidden>
-              </div>
-              <div class="form-group m-3">
-                  <label for="title">Title:</label>
-                  <input type="text" class="form-control" id="title" name="title" required>
-              </div>
-              <div class="form-group m-3">
-                  <label for="img">Project image:</label>
-                  <input type="file" class="form-control" id="img" name="img" required>
-              </div>
-              <div class="form-group m-3">
-                  <label for="description">Description:</label>
-                  <textarea class="form-control" id="description" name="description" required></textarea>
-              </div>
-              <div class="form-group m-3">
-                  <label for="coworker">Coworker:</label>
-                  <select class="form-control" id="coworker" name="coworker">
-                      <option value="" selected disabled>Choose a coworker</option>
-                      {% for friend in friends %}
-                          <option value="{{ friend.id }}">{{ friend.username }}</option>
-                      {% endfor %}
-                  </select>
-              </div>
-              <div class="form-group m-3">
-                  <label for="url_proyect">Project URL:</label>
-                  <input type="text" class="form-control" id="url_proyect" name="url_proyect">
-              </div>
-              <div class="form-group m-3">
-                  <label for="url_repo">Repository URL:</label>
-                  <input type="text" class="form-control" id="url_repo" name="url_repo">
-              </div>
-            
-            </div>
-
-
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-primary">Save</button>
-            </div>
-
-        </form>
-
-        
       </div>
-    </div>
-</div>
+  </div>
+{% endif %}
 
 
 
@@ -258,7 +263,7 @@
               <textarea class="form-control" id="about_me" name="about_me" rows="3">{{member.about_me}}</textarea>
             </div>
             <div class="form-group m-3">
-              <label for="searching">Searching:</label>
+              <label for="searching" class="mr-4">Searching:</label>
               <input type="checkbox" class="form-check-input" id="searching" name="searching" {% if member.searching %}checked{% endif %}>
             </div>
             <div class="form-group m-3">

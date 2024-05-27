@@ -23,7 +23,8 @@ Search projects:
 -Search bar with filters to search open proyects positions.
 
 
-Open to work:
+Open to work:(epmpezado... hay que armar la idea de la pagina)
 -Search bar with filters to search open to work profiles.
+
 
 docker run -p 6379:6379 -d redis:5
